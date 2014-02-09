@@ -72,13 +72,17 @@ class SystemdServiceTests(SystemdTest):
     @skipUnlessPassed('test_systemd_status')
     def test_systemd_stop_start(self):
         self.systemctl('stop', 'avahi-daemon.service')
-        self.systemctl('is-active', 'avahi-daemon.service', expected=3, verbose=True)
+        output = self.systemctl('is-active', 'avahi-daemon.service', verbose=True)
+        self.assertEqual(output, "inactive")
         self.systemctl('start','avahi-daemon.service')
-        self.systemctl('is-active', 'avahi-daemon.service', verbose=True)
+        output = self.systemctl('is-active', 'avahi-daemon.service', verbose=True)
+        self.assertEqual(output, "active")
 
     @skipUnlessPassed('test_systemd_basic')
     def test_systemd_disable_enable(self):
         self.systemctl('disable', 'avahi-daemon.service')
-        self.systemctl('is-enabled', 'avahi-daemon.service', expected=1)
+        output = self.systemctl('is-enabled', 'avahi-daemon.service', expected=1, verbose=True)
+        self.assertEqual(output, "disabled")
         self.systemctl('enable', 'avahi-daemon.service')
-        self.systemctl('is-enabled', 'avahi-daemon.service')
+        output = self.systemctl('is-enabled', 'avahi-daemon.service', verbose=True)
+        self.assertEqual(output, "enabled")
